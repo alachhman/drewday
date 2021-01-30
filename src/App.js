@@ -6,7 +6,7 @@ function App() {
     const [emoji, setEmoji] = useState("");
     const fetchWords = async () => {
         let chosenLetter = await getRandomLetter();
-        let apiCall = "http://api.datamuse.com/words?sp=" + chosenLetter + "*&md=p";
+        let apiCall = "https://api.datamuse.com/words?sp=" + chosenLetter + "*&md=p";
         setWords(
             await fetch(apiCall)
                 .then(response => response.json())
