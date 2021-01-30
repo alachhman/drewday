@@ -1,25 +1,26 @@
+import React, {useEffect, useState} from "react";
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [words, setWords] = useState([]);
+    const fetchWords = async () => {
+        setWords(await fetch("http://api.datamuse.com/words?sp=a*&md=p")
+            .then(response => response.json())
+            .then(json => json))
+    };
+    useEffect(() => {
+        document.title = "X Your Mom";
+        fetchWords().then(x => x)
+        console.log(words)
+    }, []);
+    return (
+        <div className="App">
+            <header className="App-header">
+                {words.length > 0 ? words[0].word : "None"}
+            </header>
+        </div>
+    );
 }
 
 export default App;
