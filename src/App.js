@@ -1,38 +1,69 @@
 import React, {useEffect, useState} from "react";
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
-    const [words, setWords] = useState([]);
+    const [word, setWords] = useState("");
+    const [emoji, setEmoji] = useState("");
     const fetchWords = async () => {
-        // let chosenLetter = getRandomLetter();
-        let chosenLetter = "u";
+        let chosenLetter = await getRandomLetter();
         let apiCall = "http://api.datamuse.com/words?sp=" + chosenLetter + "*&md=p";
-        console.log(chosenLetter, apiCall);
-        setWords(await fetch(apiCall)
-            .then(response => response.json())
-            .then(json => {
-                json.filter(x => x.tags.includes("v"))
-            })
+        setWords(
+            await fetch(apiCall)
+                .then(response => response.json())
+                .then(json => getVerbs(json))
+                .then(verbs => verbs[getRandomInt(verbs.length)])
         )
     };
+    const fetchEmoji = async () => {
+        setEmoji(
+            await fetch('https://ranmoji.herokuapp.com/emojis/api/v.1.0/')
+                .then(response => response.json())
+                .then(json => json.emoji.split(";")[0])
+                .then(emoji => String.fromCodePoint(emoji.replace(";", "").replace("&#", "0")))
+        )
+    }
     useEffect(() => {
         document.title = "X Your Mom";
-        fetchWords().then(x => x)
-        console.log(words)
-    }, [words]);
+        if (word === "" && emoji === "") {
+            fetchWords().then(x => x);
+            fetchEmoji().then(x => x);
+        }
+    }, [word, emoji]);
     return (
         <div className="App">
             <header className="App-header">
-                I'm going to {words.length > 0
-                ? words[getRandomInt(words.length)].word
-                : "None"} your mom.
+                <span>
+                    <img src={process.env.PUBLIC_URL + '/drew.jpg'} alt={"drew"} className={"portrait"}/>
+                    <div className="Bubble">
+                        {emoji} I'm going to {word !== "" ? word.word : "None"} your mom. {emoji}
+                    </div>
+                </span>
+                <br/>
+                <button className={"button"} onClick={() => {
+                    fetchWords().then(r => r);
+                    fetchEmoji().then(r => r);
+                }}>Re-Drew It.
+                </button>
             </header>
         </div>
     );
 }
 
-export default App;
+function getVerbs(words) {
+    return words.filter(v => {
+        if (v.tags !== undefined) {
+            let isVerb = false;
+            for (let value of v.tags) {
+                if (value === "v") {
+                    isVerb = true;
+                }
+            }
+            return isVerb;
+        } else {
+            return false;
+        }
+    });
+}
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
@@ -42,3 +73,6 @@ function getRandomLetter() {
     const alphabet = "abcdefghijklmnopqrstuvwxyz"
     return alphabet[Math.floor(Math.random() * alphabet.length)]
 }
+
+export default App;
+
