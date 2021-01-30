@@ -1,3 +1,5 @@
+Present for a leaving coworker and friend.
+
 ```
                              _,-'^\
                        _,-'   ,\ )
