@@ -1,4 +1,4 @@
-Present for a leaving coworker and friend.
+Present for a leaving coworker and friend. https://alachhman.github.io/drewday/
 
 ```
                              _,-'^\
